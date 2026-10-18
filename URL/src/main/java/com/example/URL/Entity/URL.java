@@ -5,8 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.util.Date;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +22,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor 
 @NoArgsConstructor 
+@Table(name="url")
 public class URL {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,7 +30,7 @@ public class URL {
 
     @Column(nullable = false)
     private String originalUrl;
-
+    @CreationTimestamp
     private Date createdAt;
 
     private String shortUrl;
