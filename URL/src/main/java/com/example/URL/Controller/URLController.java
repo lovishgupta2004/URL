@@ -16,7 +16,7 @@ import com.example.URL.Service.URLService;
 import lombok.AllArgsConstructor;
 
 @RestController 
-@RequestMapping ("api/urls")
+@RequestMapping ("url")
 @AllArgsConstructor 
 public class URLController {
     private final URLService URLService;
