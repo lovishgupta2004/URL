@@ -5,21 +5,46 @@ function App() {
   const [originalUrl, setOriginalUrl] = useState('')
   const [customCode, setCustomCode] = useState('')
   const [error, setError] = useState('')
+  const [shortUrl, setShortUrl] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
   setError('')
 
+  // 1. Check if URL is empty
   if (!originalUrl.trim()) {
     setError('Please enter a URL')
     return
   }
 
-  console.log('Original URL:', originalUrl)
-  console.log('Custom Code:', customCode)
+  try {
+    // 2. Send URL to Spring Boot backend
+    const response = await fetch('http://localhost:8080/url', {
+      method: 'POST',
+      headers: {
+       'Content-Type': 'text/plain',
+      },
+      body: originalUrl,
+    })
 
-  alert('URL is valid! Ready to send it to the backend.')
+    // 3. Check if backend returned an error
+    if (!response.ok) {
+      throw new Error('Failed to shorten URL')
+    }
+
+    // 4. Get short code returned by backend
+    const shortCode = await response.text()
+
+    console.log('Short code:', shortCode)
+
+    // alert(`Your short URL is: ${shortCode}`)
+    setShortUrl(`http://localhost:8080/url/${shortCode}`)
+
+  } catch (err) {
+    console.error(err)
+    setError('Unable to connect to the backend')
+  }
   }
 
   return (
@@ -54,10 +79,19 @@ function App() {
           <button type="submit">
             Shorten URL
           </button>
+
+          {shortUrl && (
+  <div>
+    <h3>Your Short URL:</h3>
+    <a href={shortUrl} target="_blank">
+      {shortUrl}
+    </a>
+  </div>
+)}
         </form>
       </div>
     </div>
   )
 }
 
-export default App
+export default App  

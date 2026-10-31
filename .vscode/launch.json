@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Spring Boot URL",
+            "request": "launch",
+            "mainClass": "com.example.URL.UrlApplication",
+            "projectName": "URL"
+        }
+    ]
+}
