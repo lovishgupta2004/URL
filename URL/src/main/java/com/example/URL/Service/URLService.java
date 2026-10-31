@@ -4,15 +4,16 @@ import com.example.URL.Repository.URLRepository;
 import com.example.URL.Entity.URL;
 
 
-import lombok.AllArgsConstructor;
-
 import org.springframework.stereotype.Service;
 
 
 @Service
-@AllArgsConstructor
 public class URLService {
     private final URLRepository urlRepository;
+
+    public URLService(URLRepository urlRepository) {
+        this.urlRepository = urlRepository;
+    }
 
     private static final String characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 

@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.URL.Service.URLService;
 
-import lombok.AllArgsConstructor;
-
 @RestController 
 @RequestMapping ("url")
-@AllArgsConstructor 
 public class URLController {
     private final URLService URLService;
+
+    public URLController(URLService URLService) {
+        this.URLService = URLService;
+    }
 
     @PostMapping
     public String shortenURL(@RequestBody String originalUrl) {
