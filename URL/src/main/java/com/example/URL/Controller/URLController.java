@@ -3,6 +3,7 @@ package com.example.URL.Controller;
 import java.net.URI;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +25,17 @@ public class URLController {
         this.URLService = URLService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
     public String shortenURL(@RequestBody String originalUrl) {
         return URLService.ShortenURL(originalUrl);
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String shortenURL(@RequestBody ShortenURLRequest request) {
+        if (request.customUrl() == null || request.customUrl().isBlank()) {
+            return URLService.ShortenURL(request.originalUrl());
+        }
+        return URLService.ShortenURLCustom(request.originalUrl(), request.customUrl());
     }
 
     @GetMapping("/{shorturl}")
@@ -35,4 +44,6 @@ public class URLController {
         return ResponseEntity.status(HttpStatus.FOUND).
         location(URI.create(originalurl)).build();
     }
+
+    public record ShortenURLRequest(String originalUrl, String customUrl) {}
 }

@@ -3,8 +3,9 @@ package com.example.URL.Service;
 import com.example.URL.Repository.URLRepository;
 import com.example.URL.Entity.URL;
 
-
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -41,6 +42,19 @@ public class URLService {
         }
         URL URL=new URL();
         String ShortCode=generateUniqueCode();
+        URL.setOriginalUrl(originalUrl);
+        URL.setShortUrl(ShortCode);
+        urlRepository.save(URL);
+        return ShortCode;
+    }
+
+    public String ShortenURLCustom(String originalUrl, String CustomUrl){
+        if(urlRepository.existsByShortUrl(CustomUrl)){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "This custom URL is already taken");
+        }
+
+        URL URL=new URL();
+        String ShortCode=CustomUrl;
         URL.setOriginalUrl(originalUrl);
         URL.setShortUrl(ShortCode);
         urlRepository.save(URL);

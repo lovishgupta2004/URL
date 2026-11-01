@@ -10,41 +10,55 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-  setError('')
+    setError('')
+    setShortUrl('')
 
-  // 1. Check if URL is empty
-  if (!originalUrl.trim()) {
-    setError('Please enter a URL')
-    return
-  }
-
-  try {
-    // 2. Send URL to Spring Boot backend
-    const response = await fetch('http://localhost:8080/url', {
-      method: 'POST',
-      headers: {
-       'Content-Type': 'text/plain',
-      },
-      body: originalUrl,
-    })
-
-    // 3. Check if backend returned an error
-    if (!response.ok) {
-      throw new Error('Failed to shorten URL')
+    if (!originalUrl.trim()) {
+      setError('Please enter a URL')
+      return
     }
 
-    // 4. Get short code returned by backend
-    const shortCode = await response.text()
+    try {
+      const trimmedOriginalUrl = originalUrl.trim()
+      const trimmedCustomCode = customCode.trim()
+      const requestBody = trimmedCustomCode
+        ? {
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              originalUrl: trimmedOriginalUrl,
+              customUrl: trimmedCustomCode,
+            }),
+          }
+        : {
+            headers: { 'Content-Type': 'text/plain' },
+            body: trimmedOriginalUrl,
+          }
 
-    console.log('Short code:', shortCode)
+      const response = await fetch('http://localhost:8080/url', {
+        method: 'POST',
+        ...requestBody,
+      })
 
-    // alert(`Your short URL is: ${shortCode}`)
-    setShortUrl(`http://localhost:8080/url/${shortCode}`)
+      if (!response.ok) {
+        let message = await response.text()
+        try {
+          const errorResponse = JSON.parse(message)
+          message = errorResponse.detail || errorResponse.message || message
+        } catch {
+          // Keep the response text when the backend doesn't return JSON.
+        }
+        setError(message || 'Failed to shorten URL')
+        return
+      }
 
-  } catch (err) {
-    console.error(err)
-    setError('Unable to connect to the backend')
-  }
+      const shortCode = await response.text()
+
+      setShortUrl(`http://localhost:8080/url/${shortCode}`)
+    } catch (err) {
+      console.error(err)
+      setError('Unable to connect to the backend')
+    }
+
   }
 
   return (
