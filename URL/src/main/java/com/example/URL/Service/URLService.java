@@ -22,7 +22,7 @@ public class URLService {
     }
 
     private static final String characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final Duration URL_TTL = Duration.ofDays(1);
+    private static final Duration URL_TTL = Duration.ofDays(2);
 
     public String generateCode(){
         StringBuilder sb=new StringBuilder();
